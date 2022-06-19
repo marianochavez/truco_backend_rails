@@ -7,11 +7,11 @@ class Api::V1::GamesController < ApplicationController
 
   def index
     games = Game.filter(params.slice(:id, :status, :player))
-    render json: { data: games }, status: :ok
+    render json: { status: 'OK', data: games }, status: :ok
   end
 
   def show
-    render json: { data: @game }, status: :ok
+    render json: { status: 'OK', data: @game }, status: :ok
   end
 
   def create
@@ -59,14 +59,14 @@ class Api::V1::GamesController < ApplicationController
     @game = Game.find(params[:id])
     return if @game.present?
 
-    render json: { data: "Game not found" }, status: :not_found
+    render json: { status: 'ERROR', data: "Game not found" }, status: :not_found
     false
   end
 
   def check_state
     return if @game.status != "Finished" || @game.status != "Abandoned"
 
-    render json: { data: "The game is over, create a new one" }, status: :ok
+    render json: { status: 'ERROR', data: "The game is over, create a new one" }, status: :ok
   end
 
   def check_player_in
