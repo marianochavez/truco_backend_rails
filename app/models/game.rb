@@ -16,6 +16,11 @@ class Game < ApplicationRecord
   before_create :set_init_cards
   before_create :set_init_players
 
+  include Filterable
+  scope :filter_by_id, -> (id) {where id: id}
+  scope :filter_by_status, -> (status) { where status: status }
+  #todo filtar por nombre de usuario
+
   def set_init_cards
     self.cards = (%w[e c o b].map {
       |suit| [1, 2, 3, 4, 5, 6, 7, 10, 11, 12].map { |number| number.to_s + suit } }).flatten
@@ -78,6 +83,7 @@ class Game < ApplicationRecord
 
   def deal_cards
     set_variables
+    set_init_cards
     @players_list.each { |player|
       cards = self.cards.sample(3)
       self[player][:cards] = cards

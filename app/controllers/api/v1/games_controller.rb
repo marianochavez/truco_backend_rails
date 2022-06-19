@@ -6,7 +6,7 @@ class Api::V1::GamesController < ApplicationController
   before_action :check_state, only: [:join_game, :leave, :deal]
 
   def index
-    games = Game.all
+    games = Game.filter(params.slice(:id, :status, :player))
     render json: { data: games }, status: :ok
   end
 
