@@ -10,22 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_18_211316) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_18_195734) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "card_decks", force: :cascade do |t|
-    t.text "cards"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "games", force: :cascade do |t|
+    t.text "cards"
     t.integer "status", default: 0
     t.integer "player_quantity", default: 2
     t.string "turn"
     t.integer "round"
-    t.text "players"
+    t.text "player_1"
+    t.text "player_2"
+    t.text "player_3"
+    t.text "player_4"
+    t.text "player_5"
+    t.text "player_6"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -33,7 +33,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_18_211316) do
   create_table "players", force: :cascade do |t|
     t.string "username"
     t.string "name"
-    t.string "status"
     t.string "password_digest"
     t.string "token"
     t.datetime "created_at", null: false

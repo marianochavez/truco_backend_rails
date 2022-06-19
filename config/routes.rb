@@ -1,6 +1,20 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  namespace :api do
+    namespace :v1 do
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+      resources :games, only: [:index, :show, :create] do
+        member do
+          put 'join-game', as: :join_game
+        end
+      end
+
+      resources :players, only: [:index, :create] do
+        collection do
+          post 'sign-in', as: :sing_in
+          post 'sign-out', as: :sign_out
+        end
+      end
+
+    end
+  end
 end
