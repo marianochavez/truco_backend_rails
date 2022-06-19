@@ -1,8 +1,9 @@
 class Api::V1::GamesController < ApplicationController
-  before_action :set_player, only: [:create, :join_game]
-  before_action :check_token, only: [:create, :join_game]
-  before_action :set_game, only: [:show, :join_game]
-  before_action :check_state, only: [:join_game]
+  before_action :set_player, only: [:create, :join_game, :leave, :deal]
+  before_action :check_token, only: [:create, :join_game, :leave, :deal]
+  before_action :set_game, only: [:show, :join_game, :leave, :deal]
+  before_action :check_player_in, only: [:leave, :deal]
+  before_action :check_state, only: [:join_game, :leave, :deal]
 
   def index
     games = Game.all
@@ -34,7 +35,22 @@ class Api::V1::GamesController < ApplicationController
     else
       render json: { status: 'ERROR', data: @game.errors }, status: :unprocessable_entity
     end
+  end
 
+  def leave
+    @game.set_status(3)
+    if @game.save
+      render json: { status: 'OK', data: @game }, status: :ok
+    end
+  end
+
+  def deal
+    @game.deal_cards
+    if @game.save
+      render json: { status: 'OK', data: @game }, status: :ok
+    else
+      render json: { status: 'ERROR', data: @game.errors }, status: :unprocessable_entity
+    end
   end
 
   private
@@ -51,5 +67,11 @@ class Api::V1::GamesController < ApplicationController
     return if @game.status != "Finished" || @game.status != "Abandoned"
 
     render json: { data: "The game is over, create a new one" }, status: :ok
+  end
+
+  def check_player_in
+    return if @game.check_username(@player['username'])
+
+    render json: { status: 'ERROR', data: 'Unauthorized' }, status: :unauthorized
   end
 end
