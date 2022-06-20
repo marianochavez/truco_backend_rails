@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
     @player ||= Player.find_by(token: header_token)
     return if @player.present?
 
-    render json: { error: 'Player not found' }, status: :not_found
+    render json: { status: 'ERROR', data: 'Player not found' }, status: :not_found
   end
 
   def header_token
@@ -17,6 +17,6 @@ class ApplicationController < ActionController::API
   def check_token
     return if header_token.present? && header_token == @player.token
 
-    render json: { error: 'Token error' }, status: :unauthorized
+    render json: { status: 'ERROR', data: 'Token error' }, status: :unauthorized
   end
 end

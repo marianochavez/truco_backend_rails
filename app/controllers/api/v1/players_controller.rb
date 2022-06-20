@@ -24,7 +24,7 @@ class Api::V1::PlayersController < ApplicationController
       player.save
       render json: { status: 'OK', data: player }, status: :ok
     else
-      error = player.blank? ? 'Player does not exist' : 'Invalid password'
+      error = player.blank? ? 'Player does not exist' : 'Incorrect password'
       render json: { status: 'ERROR', data: error }, status: :bad_request
     end
   end

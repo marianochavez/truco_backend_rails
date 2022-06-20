@@ -4,7 +4,6 @@ class CreateGames < ActiveRecord::Migration[7.0]
       t.text :cards
       t.integer :status, default: 0
       t.integer :player_quantity, default: 2
-      t.string :turn
       t.integer :round
       t.text :player_1
       t.text :player_2

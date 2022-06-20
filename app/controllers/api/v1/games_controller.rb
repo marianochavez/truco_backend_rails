@@ -1,9 +1,9 @@
 class Api::V1::GamesController < ApplicationController
-  before_action :set_player, only: [:create, :join_game, :leave, :deal]
-  before_action :check_token, only: [:create, :join_game, :leave, :deal]
+  before_action :set_player, only: [:show, :create, :join_game, :leave, :deal]
+  before_action :check_token, only: [:show, :create, :join_game, :leave, :deal]
   before_action :set_game, only: [:show, :join_game, :leave, :deal]
-  before_action :check_player_in, only: [:leave, :deal]
-  before_action :check_state, only: [:join_game, :leave, :deal]
+  before_action :check_player_in, only: [:show,:leave, :deal]
+  before_action :check_state, only: [:show,:join_game, :leave, :deal]
 
   def index
     games = Game.filter(params.slice(:id, :status, :player))
@@ -15,8 +15,11 @@ class Api::V1::GamesController < ApplicationController
   end
 
   def create
+    unless Game.player_quantities.values.include?(params[:player_quantity])
+      return render json: { status: 'ERROR', data: "The number of players can be 2,4,6" }, status: :bad_request
+    end
     game = Game.new
-    game.create_game(@player["username"])
+    game.create_game(@player["username"], params[:player_quantity])
     if game.save
       render json: { status: 'OK', data: game }, status: :ok
     else
@@ -46,6 +49,7 @@ class Api::V1::GamesController < ApplicationController
 
   def deal
     @game.deal_cards
+    @game.increment_round
     if @game.save
       render json: { status: 'OK', data: @game }, status: :ok
     else

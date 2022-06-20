@@ -39,9 +39,10 @@ class Game < ApplicationRecord
     @players_list = %w[player_1 player_2 player_3 player_4 player_5 player_6].slice(0, @max_players)
   end
 
-  def create_game(username)
+  def create_game(username, pl_quantity)
     self.player_1 = { username: username, cards: [nil] * 3 }
-    self.round = 1
+    self.round = 0
+    self.player_quantity = pl_quantity || 2
   end
 
   def check_username(username)
@@ -89,6 +90,10 @@ class Game < ApplicationRecord
       self[player][:cards] = cards
       self.cards = self.cards.reject {|card| cards.include?(card)}
     }
+  end
+
+  def increment_round
+    self.round += 1
   end
 
 end
