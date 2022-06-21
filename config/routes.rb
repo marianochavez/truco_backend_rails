@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :games, only: [:index, :show, :create] do
         member do
           put 'join-game', as: :join_game
+          put 'play-card', as: :play_card
           put 'leave'
           put 'deal'
         end

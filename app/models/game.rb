@@ -1,5 +1,4 @@
 class Game < ApplicationRecord
-  #todo lo tengo que poner al hasmany? al tener players, en que me infiere si tengo el att players
   has_many :players
 
   serialize :cards
@@ -17,7 +16,7 @@ class Game < ApplicationRecord
   before_create :set_init_players
 
   include Filterable
-  scope :filter_by_id, -> (id) {where id: id}
+  scope :filter_by_id, -> (id) { where id: id }
   scope :filter_by_status, -> (status) { where status: status }
   #todo filtar por nombre de usuario
 
@@ -40,9 +39,9 @@ class Game < ApplicationRecord
   end
 
   def create_game(username, pl_quantity)
-    self.player_1 = { username: username, cards: [nil] * 3 }
+    self.player_1 = { username: username, cards: [], played_cards: [] }
     self.round = 0
-    self.player_quantity = pl_quantity || 2
+    self.player_quantity = pl_quantity
   end
 
   def check_username(username)
@@ -68,7 +67,7 @@ class Game < ApplicationRecord
     set_variables
     players = self.values_at(@players_list)
     new_player = @players_list[players.find_index(nil)]
-    self[new_player] = { username: username, cards: [nil] * 3 }
+    self[new_player] = { username: username, cards: [], played_cards: [] }
     check_join_players(@max_players)
   end
 
@@ -84,12 +83,26 @@ class Game < ApplicationRecord
 
   def deal_cards
     set_variables
+    # set full card deck
     set_init_cards
     @players_list.each { |player|
+      # get 3 random cards from deck
       cards = self.cards.sample(3)
       self[player][:cards] = cards
-      self.cards = self.cards.reject {|card| cards.include?(card)}
+      # delete selected cards from deck
+      self.cards = self.cards.reject { |card| cards.include?(card) }
+      self[player][:played_cards] = []
     }
+  end
+
+  def play(player, card)
+    # delete card from cards (hand) & push to played cards
+    self[player][:cards].delete(card)
+    self[player][:played_cards].push(card)
+  end
+
+  def player_has_card?(player,card)
+    self[player][:cards].include?(card)
   end
 
   def increment_round

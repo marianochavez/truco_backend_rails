@@ -18,7 +18,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_18_195734) do
     t.text "cards"
     t.integer "status", default: 0
     t.integer "player_quantity", default: 2
-    t.string "turn"
     t.integer "round"
     t.text "player_1"
     t.text "player_2"
