@@ -18,6 +18,7 @@ class Game < ApplicationRecord
   include Filterable
   scope :filter_by_id, -> (id) { where id: id }
   scope :filter_by_status, -> (status) { where status: status }
+  # scope :filter_by_player, -> (player) { where player_1[:username]== player}
   #todo filtar por nombre de usuario
 
   def set_init_cards

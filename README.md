@@ -1,24 +1,13 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Deploy
 
-Things you may want to cover:
+https://trucobackendrails-production.up.railway.app
 
-* Ruby version
+## Endpoints
 
-* System dependencies
+https://documenter.getpostman.com/view/15545641/UzBpKRce
 
-* Configuration
+## Frontend
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+https://github.com/marianochavez/truco_frontend_react
