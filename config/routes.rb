@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         collection do
           post 'sign-in', as: :sing_in
           post 'sign-out', as: :sign_out
+          patch 'avatar'
         end
       end
 

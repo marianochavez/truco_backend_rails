@@ -1,6 +1,7 @@
 class Api::V1::PlayersController < ApplicationController
-  before_action :set_player, only: [:sign_out]
-  before_action :check_token, only: [:sign_out]
+  before_action :set_player, only: [:sign_out, :avatar]
+  before_action :check_token, only: [:sign_out, :avatar]
+  before_action :check_configuration, only: [:create, :avatar]
 
   def index
     players = Player.all
@@ -9,10 +10,26 @@ class Api::V1::PlayersController < ApplicationController
 
   def create
     player = Player.new(user_params)
+    upload_image
+    player.set_avatar(@image_url)
     if player.save
       render json: { status: 'OK', data: player }, status: :created
     else
       render json: { status: 'ERROR', data: player.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def avatar
+    upload_image
+    unless params[:avatar]
+      return render json: { status: 'ERROR', data: 'No image uploaded' }, status: :bad_request
+    end
+    @player.set_avatar(@image_url)
+
+    if @player.save
+      render json: { status: 'OK', data: @player }, status: :created
+    else
+      render json: { status: 'ERROR', data: @player.errors }, status: :unprocessable_entity
     end
   end
 
@@ -41,6 +58,25 @@ class Api::V1::PlayersController < ApplicationController
   private
 
   def user_params
-    params.permit(:name, :username, :password, :password_confirmation,)
+    params.permit(:name, :username, :avatar, :password, :password_confirmation,)
   end
+
+  def check_configuration
+    render json: { status: 'ERROR', data: 'Cloudinary configuration missing' } if Cloudinary.config.api_key.blank?
+  end
+
+  def upload_image
+    @default_image = 'https://res.cloudinary.com/chavedo/image/upload/v1656087237/truco_profiles/default.png'
+    if params[:avatar]
+      image_res = Cloudinary::Uploader.upload(params[:avatar],
+                                              :folder => 'truco_profiles/',
+                                              :overwrite => 'true',
+                                              :public_id => params[:username] ? params[:username] : @player['username'],
+                                              :width => 500, :height => 500, :crop => 'fill')
+      return @image_url = image_res['secure_url'] ? image_res['secure_url'] : @default_image
+    end
+
+    @image_url = @default_image
+  end
+
 end

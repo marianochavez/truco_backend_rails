@@ -12,4 +12,8 @@ class Player < ApplicationRecord
   def set_token
     self.token = SecureRandom.uuid
   end
+
+  def set_avatar(url)
+    self.avatar = url
+  end
 end
