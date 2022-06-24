@@ -8,6 +8,8 @@ Rails.application.routes.draw do
           put 'play-card', as: :play_card
           put 'leave'
           put 'deal'
+          put 'go-to-deck', as: :go_to_deck
+          put 'burn-card', as: :burn_card
         end
       end
 

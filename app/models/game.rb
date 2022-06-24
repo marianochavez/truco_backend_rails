@@ -134,4 +134,13 @@ class Game < ApplicationRecord
     self.round += 1
   end
 
+  def go_to_deck(player)
+    self[player][:cards] = []
+    self[player][:played_cards] = []
+  end
+
+  def burn_card(player,card)
+    self[player][:cards].delete(card)
+  end
+
 end

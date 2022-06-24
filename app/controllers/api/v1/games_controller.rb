@@ -1,10 +1,10 @@
 class Api::V1::GamesController < ApplicationController
-  before_action :set_player, only: [:show, :create, :join_game, :leave, :deal, :play_card]
-  before_action :check_token, only: [:show, :create, :join_game, :leave, :deal, :play_card]
-  before_action :set_game, only: [:show, :join_game, :leave, :deal, :play_card]
-  before_action :check_player_in, only: [:show,:leave, :deal, :play_card]
-  before_action :check_player_play, only: [:play_card]
-  before_action :check_state, only: [:show,:join_game, :leave, :deal, :play_card]
+  before_action :set_player, only: [:show, :create, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
+  before_action :check_token, only: [:show, :create, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
+  before_action :set_game, only: [:show, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
+  before_action :check_player_in, only: [:show, :leave, :deal, :play_card, :go_to_deck, :burn_card]
+  before_action :check_player_play, only: [:play_card, :go_to_deck, :burn_card]
+  before_action :check_state, only: [:show, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
 
   def index
     games = Game.filter(params.slice(:id, :status, :player))
@@ -63,11 +63,33 @@ class Api::V1::GamesController < ApplicationController
   end
 
   def play_card
-    unless @game.player_has_card?(params[:player],params[:card])
+    unless @game.player_has_card?(params[:player], params[:card])
       return render json: { status: 'ERROR', data: 'The player does not have the card or it is played' }, status: :ok
     end
 
-    @game.play(params[:player],params[:card])
+    @game.play(params[:player], params[:card])
+    if @game.save
+      render json: { status: 'OK', data: @game }, status: :ok
+    else
+      render json: { status: 'ERROR', data: @game.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def go_to_deck
+    @game.go_to_deck(params[:player])
+    if @game.save
+      render json: { status: 'OK', data: @game }, status: :ok
+    else
+      render json: { status: 'ERROR', data: @game.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def burn_card
+    unless @game.player_has_card?(params[:player], params[:card])
+      return render json: { status: 'ERROR', data: 'The player does not have the card or it is played' }, status: :ok
+    end
+
+    @game.burn_card(params[:player], params[:card])
     if @game.save
       render json: { status: 'OK', data: @game }, status: :ok
     else
