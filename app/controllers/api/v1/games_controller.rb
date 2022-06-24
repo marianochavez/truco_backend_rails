@@ -33,6 +33,10 @@ class Api::V1::GamesController < ApplicationController
       return render json: { status: 'ERROR', data: 'Not possible to join' }, status: :ok
     end
 
+    unless params[:team] && @game.join_team(params[:team])
+      return render json: { status: 'ERROR', data: 'The team is required or is full' }, status: :ok
+    end
+
     @game.join_game(@player['username'])
     if @game.save
       render json: { status: 'OK', data: @game }, status: :ok

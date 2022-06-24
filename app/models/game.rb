@@ -8,6 +8,8 @@ class Game < ApplicationRecord
   serialize :player_4
   serialize :player_5
   serialize :player_6
+  serialize :team_1
+  serialize :team_2
 
   enum status: { Queue: 0, Playing: 1, Finished: 2, Abandoned: 3 }
   enum player_quantity: { Two: 2, Fourth: 4, Six: 6 }
@@ -38,9 +40,13 @@ class Game < ApplicationRecord
   end
 
   def create_game(username, pl_quantity)
+    set_variables
     self.player_1 = { username: username, cards: [], played_cards: [] }
     self.round = 0
     self.player_quantity = pl_quantity
+    self.team_1 = [nil]*(pl_quantity/2)
+    self.team_2 = [nil]*(pl_quantity/2)
+    self.team_1[0] = 'player_1'
   end
 
   def check_username(username)
@@ -68,6 +74,26 @@ class Game < ApplicationRecord
     new_player = @players_list[players.find_index(nil)]
     self[new_player] = { username: username, cards: [], played_cards: [] }
     check_join_players(@max_players)
+  end
+
+  def join_team(team)
+    set_variables
+    players = self.values_at(@players_list)
+    new_player = @players_list[players.find_index(nil)]
+    if team == 1
+      unless self.team_1.include?(nil)
+        return false
+      end
+      index = self.team_1.find_index(nil)
+      self.team_1[index] = new_player
+    else
+      unless self.team_2.include?(nil)
+        return false
+      end
+      index = self.team_2.find_index(nil)
+      self.team_2[index] = new_player
+    end
+
   end
 
   def check_join_players(num)

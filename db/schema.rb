@@ -25,6 +25,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_18_195734) do
     t.text "player_4"
     t.text "player_5"
     t.text "player_6"
+    t.text "team_1"
+    t.text "team_2"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

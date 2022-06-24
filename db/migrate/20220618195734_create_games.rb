@@ -11,6 +11,8 @@ class CreateGames < ActiveRecord::Migration[7.0]
       t.text :player_4
       t.text :player_5
       t.text :player_6
+      t.text :team_1
+      t.text :team_2
 
       t.timestamps
     end
