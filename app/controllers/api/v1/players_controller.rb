@@ -4,7 +4,7 @@ class Api::V1::PlayersController < ApplicationController
   before_action :check_configuration, only: [:create, :avatar]
 
   def index
-    players = Player.all
+    players = Player.filter(params.slice(:username))
     render json: { status: 'OK', data: players }, status: :ok
   end
 

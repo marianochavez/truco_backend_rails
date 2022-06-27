@@ -141,6 +141,7 @@ class Game < ApplicationRecord
 
   def burn_card(player,card)
     self[player][:cards].delete(card)
+    self[player][:played_cards].push(nil)
   end
 
 end

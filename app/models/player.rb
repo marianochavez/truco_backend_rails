@@ -9,6 +9,9 @@ class Player < ApplicationRecord
 
   before_create :set_token
 
+  include Filterable
+  scope :filter_by_username, -> (username) {where username: username}
+
   def set_token
     self.token = SecureRandom.uuid
   end

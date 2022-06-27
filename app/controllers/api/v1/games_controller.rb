@@ -3,7 +3,7 @@ class Api::V1::GamesController < ApplicationController
   before_action :check_token, only: [:show, :create, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
   before_action :set_game, only: [:show, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
   before_action :check_player_in, only: [:show, :leave, :deal, :play_card, :go_to_deck, :burn_card]
-  before_action :check_player_play, only: [:play_card, :go_to_deck, :burn_card]
+  before_action :check_player_play, only: [:play_card, :burn_card]
   before_action :check_state, only: [:show, :join_game, :leave, :deal, :play_card, :go_to_deck, :burn_card]
 
   def index
